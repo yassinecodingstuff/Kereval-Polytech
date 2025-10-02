@@ -1,0 +1,3 @@
+Swagger utilisé : le premier fichier Swagger fourni par l’entreprise.
+
+Source d’entrée pour les prompts : utilisation de l’URL du Swagger (https://petstore.swagger.io/).
