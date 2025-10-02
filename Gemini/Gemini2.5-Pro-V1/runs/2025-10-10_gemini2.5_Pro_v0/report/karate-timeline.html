@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Karate Timeline</title>
+    <style>
+      body, html { font-family: arial, sans-serif; font-size: 11pt; }
+      #visualization { box-sizing: border-box; width: 100%; height: 300px; }
+      .vis-item.failed { background-color: #F2928C; }
+      .page-heading { padding: 0.5em; margin-bottom: 0.5em; background-color: lightcyan; border: 1px solid gray; }
+    </style>
+    <script src="res/vis.min.js"></script>
+    <link href="res/vis.min.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="page-heading">
+      <a href="karate-summary.html">Summary</a>
+    </div>     
+    <div id="visualization"></div>
+    <script>
+var groups = [{"content":"main","id":1}];
+var items = [{"id":1,"group":1,"content":"features\/pet\/petmanagement[1:6]","start":1759339214023,"end":1759339216202,"title":"features\/pet\/petmanagement[1:6] 19:20:14.023-19:20:16.202 Successfully add a new pet to the store"},{"id":2,"group":1,"content":"features\/pet\/petmanagement[2.1:23]","start":1759339216298,"end":1759339217316,"title":"features\/pet\/petmanagement[2.1:23] 19:20:16.298-19:20:17.316 Find pets by status"},{"id":3,"group":1,"content":"features\/pet\/petmanagement[2.2:24]","start":1759339217361,"end":1759339217707,"title":"features\/pet\/petmanagement[2.2:24] 19:20:17.361-19:20:17.707 Find pets by status"},{"id":4,"group":1,"content":"features\/pet\/petmanagement[2.3:25]","start":1759339217724,"end":1759339218169,"title":"features\/pet\/petmanagement[2.3:25] 19:20:17.724-19:20:18.169 Find pets by status"},{"id":5,"group":1,"content":"features\/pet\/petmanagement[3:27]","start":1759339218191,"end":1759339218499,"title":"features\/pet\/petmanagement[3:27] 19:20:18.191-19:20:18.499 Attempt to find pets with an invalid status","className":"failed"},{"id":6,"group":1,"content":"features\/pet\/petmanagement[4:33]","start":1759339218545,"end":1759339218884,"title":"features\/pet\/petmanagement[4:33] 19:20:18.545-19:20:18.884 Successfully find an existing pet by its ID"},{"id":7,"group":1,"content":"features\/pet\/petmanagement[5:40]","start":1759339218904,"end":1759339219256,"title":"features\/pet\/petmanagement[5:40] 19:20:18.904-19:20:19.256 Attempt to find a pet with a non-existent ID"},{"id":8,"group":1,"content":"features\/pet\/petmanagement[6:46]","start":1759339219269,"end":1759339219700,"title":"features\/pet\/petmanagement[6:46] 19:20:19.269-19:20:19.700 Successfully update an existing pet's name and status"},{"id":9,"group":1,"content":"features\/pet\/petmanagement[7:55]","start":1759339219713,"end":1759339220734,"title":"features\/pet\/petmanagement[7:55] 19:20:19.713-19:20:20.734 Successfully delete an existing pet","className":"failed"},{"id":10,"group":1,"content":"features\/store\/storemanagement[1:6]","start":1759339222932,"end":1759339223252,"title":"features\/store\/storemanagement[1:6] 19:20:22.932-19:20:23.252 Successfully place an order for a pet and verify it"},{"id":11,"group":1,"content":"features\/store\/storemanagement[2:25]","start":1759339223268,"end":1759339223579,"title":"features\/store\/storemanagement[2:25] 19:20:23.268-19:20:23.579 Find an existing purchase order by ID","className":"failed"},{"id":12,"group":1,"content":"features\/store\/storemanagement[3:31]","start":1759339223664,"end":1759339223988,"title":"features\/store\/storemanagement[3:31] 19:20:23.664-19:20:23.988 Attempt to find a purchase order with a non-existent ID"},{"id":13,"group":1,"content":"features\/store\/storemanagement[4:37]","start":1759339224011,"end":1759339224321,"title":"features\/store\/storemanagement[4:37] 19:20:24.011-19:20:24.321 Successfully delete an existing purchase order","className":"failed"},{"id":14,"group":1,"content":"features\/store\/storemanagement[5:47]","start":1759339224351,"end":1759339224661,"title":"features\/store\/storemanagement[5:47] 19:20:24.351-19:20:24.661 Retrieve pet inventories by status"},{"id":15,"group":1,"content":"features\/user\/usermanagement[1:19]","start":1759339225151,"end":1759339225472,"title":"features\/user\/usermanagement[1:19] 19:20:25.151-19:20:25.472 Create a new user and verify creation","className":"failed"},{"id":16,"group":1,"content":"features\/user\/usermanagement[2:26]","start":1759339225510,"end":1759339225818,"title":"features\/user\/usermanagement[2:26] 19:20:25.510-19:20:25.818 Successfully log in with valid credentials"},{"id":17,"group":1,"content":"features\/user\/usermanagement[3:34]","start":1759339225831,"end":1759339226117,"title":"features\/user\/usermanagement[3:34] 19:20:25.831-19:20:26.117 Attempt to log in with invalid credentials","className":"failed"},{"id":18,"group":1,"content":"features\/user\/usermanagement[4:42]","start":1759339226133,"end":1759339226420,"title":"features\/user\/usermanagement[4:42] 19:20:26.133-19:20:26.420 Retrieve user details by username","className":"failed"},{"id":19,"group":1,"content":"features\/user\/usermanagement[5:49]","start":1759339226456,"end":1759339226779,"title":"features\/user\/usermanagement[5:49] 19:20:26.456-19:20:26.779 Attempt to retrieve a user with a non-existent username"},{"id":20,"group":1,"content":"features\/user\/usermanagement[6:55]","start":1759339226817,"end":1759339226844,"title":"features\/user\/usermanagement[6:55] 19:20:26.817-19:20:26.844 Update an existing user's information and verify","className":"failed"},{"id":21,"group":1,"content":"features\/user\/usermanagement[7:69]","start":1759339226882,"end":1759339227542,"title":"features\/user\/usermanagement[7:69] 19:20:26.882-19:20:27.542 Successfully log out and end the current session"}];
+</script>
+    <script>
+      var container = document.getElementById('visualization');
+      var timeline = new vis.Timeline(container);
+      timeline.setOptions({groupOrder: 'content'});
+      timeline.setGroups(new vis.DataSet(groups));
+      timeline.setItems(new vis.DataSet(items));
+    </script>
+  </body>
+</html>
