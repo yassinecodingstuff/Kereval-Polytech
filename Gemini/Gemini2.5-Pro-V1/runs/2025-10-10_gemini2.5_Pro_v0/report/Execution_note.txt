@@ -1,0 +1,1 @@
+- Ce que j’ai remarqué, c’est qu’en relançant l’exécution, je n’obtiens pas les mêmes résultats de tests.
