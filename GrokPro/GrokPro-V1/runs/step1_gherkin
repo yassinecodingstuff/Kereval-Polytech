@@ -1,0 +1,115 @@
+Pet Management: High-Impact CRUD Operations
+Add a New Pet (Success Path)
+Title: Ensure a new pet can be added to the store with valid, complete data
+Scenario: Successfully add a new pet
+Given the Petstore API is available
+When I send a POST request to /pet with valid JSON payload containing id, name, category, photoUrls, tags, and status
+Then the response status code should be 200 (or 201, per REST conventions)
+And the response body should contain the submitted pet data
+And the pet should be retrievable by its ID
+
+Add a New Pet (Invalid Data)
+Title: Prevent creation of pets with invalid or missing required fields
+Scenario: Attempt to add a pet with missing required fields
+Given the Petstore API is available
+When I send a POST request to /pet with a JSON payload missing required fields (e.g., no name or photoUrls)
+Then the response status code should be 400 (Bad Request)
+And the response should indicate which fields are invalid or missing
+
+Update an Existing Pet (Success Path)
+Title: Ensure an existing pet's details can be updated
+Scenario: Successfully update a pet's details
+Given a pet exists in the store with a known ID
+When I send a PUT request to /pet with updated JSON payload for that pet
+Then the response status code should be 200
+And the response body should reflect the updated pet data
+And subsequent GET requests for the pet should return the updated data
+
+Update a Non-Existent Pet
+Title: Prevent updates to non-existent pets
+Scenario: Attempt to update a pet that does not exist
+Given the Petstore API is available
+When I send a PUT request to /pet with a JSON payload for a non-existent pet ID
+Then the response status code should be 404 (Not Found)
+
+Delete a Pet
+Title: Ensure a pet can be deleted from the store
+Scenario: Successfully delete a pet
+Given a pet exists in the store with a known ID
+When I send a DELETE request to /pet/{petId}
+Then the response status code should be 200
+And subsequent GET requests for the pet should return 404 (Not Found)
+
+Delete a Non-Existent Pet
+Title: Handling deletion requests for non-existent pets
+Scenario: Attempt to delete a pet that does not exist
+Given the Petstore API is available
+When I send a DELETE request to /pet/{petId} for a non-existent pet ID
+Then the response status code should be 404 (Not Found)
+
+Order Management: Critical Business Logic
+Place an Order (Success Path)
+Title: Ensure an order can be placed for an available pet
+Scenario: Successfully place an order
+Given a pet exists in the store and is available
+When I send a POST request to /store/order with valid order details (petId, quantity, shipDate, status, complete)
+Then the response status code should be 200
+And the response body should contain the order details
+And the order should be retrievable by its ID
+
+Place an Order for a Non-Existent Pet
+Title: Prevent orders for non-existent pets (Logical Consistency)
+Scenario: Attempt to place an order for a non-existent pet
+Given the Petstore API is available
+When I send a POST request to /store/order with a non-existent petId
+Then the response status code should be 400 or 404
+And the response should indicate the pet does not exist
+
+Retrieve Order by ID
+Title: Ensure an existing order can be retrieved
+Scenario: Successfully retrieve an existing order
+Given an order exists in the store with a known ID
+When I send a GET request to /store/order/{orderId}
+Then the response status code should be 200
+And the response body should contain the order details
+
+User Management: Authentication and Security
+Create a User (Success Path)
+Title: Ensure a new user can be created
+Scenario: Successfully create a new user
+Given the Petstore API is available
+When I send a POST request to /user with valid user details
+Then the response status code should be 200
+And the user should be retrievable by username
+
+Create a User with Invalid Data
+Title: Prevent creation of users with invalid data
+Scenario: Attempt to create a user with invalid data
+Given the Petstore API is available
+When I send a POST request to /user with invalid or missing required fields
+Then the response status code should be 400
+And the response should indicate invalid or missing fields
+
+Security and Availability Risks
+Unauthenticated Access to Sensitive Endpoints
+Title: Ensure sensitive endpoints enforce authentication
+Scenario: Attempt to access a sensitive endpoint without authentication
+Given the Petstore API is available
+When I send a request to a sensitive endpoint (e.g., /user/{username}) without authentication
+Then the response status code should be 401 (Unauthorized)
+
+Excessive Data Exposure
+Title: Ensure API responses do not expose unnecessary data
+Scenario: Retrieve pet or user details
+Given the Petstore API is available
+When I send a GET request to /pet/{petId} or /user/{username}
+Then the response should contain only the necessary fields
+And sensitive or internal fields should not be exposed
+
+Rate Limiting and Abuse Prevention
+Title: Ensure the API is protected against abuse and DoS
+Scenario: Send a high volume of requests in a short time
+Given the Petstore API is available
+When I send a rapid sequence of identical requests to any endpoint
+Then the API should enforce rate limiting
+And excess requests should be rejected with status 429 (Too Many Requests)
