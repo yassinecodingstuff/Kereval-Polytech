@@ -1,115 +1,155 @@
-Pet Management: High-Impact CRUD Operations
-Add a New Pet (Success Path)
-Title: Ensure a new pet can be added to the store with valid, complete data
-Scenario: Successfully add a new pet
-Given the Petstore API is available
-When I send a POST request to /pet with valid JSON payload containing id, name, category, photoUrls, tags, and status
-Then the response status code should be 200 (or 201, per REST conventions)
-And the response body should contain the submitted pet data
-And the pet should be retrievable by its ID
+Pet Management API Tests
+Feature: Pet Resource Management
+As a user of the Petstore API, I want to perform comprehensive CRUD (Create, Read, Update, Delete) operations on pet data to ensure data integrity and system reliability.
 
-Add a New Pet (Invalid Data)
-Title: Prevent creation of pets with invalid or missing required fields
-Scenario: Attempt to add a pet with missing required fields
-Given the Petstore API is available
-When I send a POST request to /pet with a JSON payload missing required fields (e.g., no name or photoUrls)
-Then the response status code should be 400 (Bad Request)
-And the response should indicate which fields are invalid or missing
-
-Update an Existing Pet (Success Path)
-Title: Ensure an existing pet's details can be updated
-Scenario: Successfully update a pet's details
-Given a pet exists in the store with a known ID
-When I send a PUT request to /pet with updated JSON payload for that pet
+Scenario: Successfully add a new pet to the store
+Given a valid pet payload is prepared
+When a POST request is sent to the /pet endpoint
 Then the response status code should be 200
-And the response body should reflect the updated pet data
-And subsequent GET requests for the pet should return the updated data
+And the response body should contain the newly created pet's details
 
-Update a Non-Existent Pet
-Title: Prevent updates to non-existent pets
-Scenario: Attempt to update a pet that does not exist
-Given the Petstore API is available
-When I send a PUT request to /pet with a JSON payload for a non-existent pet ID
-Then the response status code should be 404 (Not Found)
-
-Delete a Pet
-Title: Ensure a pet can be deleted from the store
-Scenario: Successfully delete a pet
-Given a pet exists in the store with a known ID
-When I send a DELETE request to /pet/{petId}
+Scenario: Find pets by 'available' status
+Given the API is available
+When a GET request is sent to the /pet/findByStatus endpoint with the status "available"
 Then the response status code should be 200
-And subsequent GET requests for the pet should return 404 (Not Found)
+And the response body should contain a list of pets with the status "available"
 
-Delete a Non-Existent Pet
-Title: Handling deletion requests for non-existent pets
-Scenario: Attempt to delete a pet that does not exist
-Given the Petstore API is available
-When I send a DELETE request to /pet/{petId} for a non-existent pet ID
-Then the response status code should be 404 (Not Found)
-
-Order Management: Critical Business Logic
-Place an Order (Success Path)
-Title: Ensure an order can be placed for an available pet
-Scenario: Successfully place an order
-Given a pet exists in the store and is available
-When I send a POST request to /store/order with valid order details (petId, quantity, shipDate, status, complete)
+Scenario: Find pets by 'sold' status
+Given the API is available
+When a GET request is sent to the /pet/findByStatus endpoint with the status "sold"
 Then the response status code should be 200
-And the response body should contain the order details
-And the order should be retrievable by its ID
+And the response body should contain a list of pets with the status "sold"
 
-Place an Order for a Non-Existent Pet
-Title: Prevent orders for non-existent pets (Logical Consistency)
-Scenario: Attempt to place an order for a non-existent pet
-Given the Petstore API is available
-When I send a POST request to /store/order with a non-existent petId
-Then the response status code should be 400 or 404
-And the response should indicate the pet does not exist
-
-Retrieve Order by ID
-Title: Ensure an existing order can be retrieved
-Scenario: Successfully retrieve an existing order
-Given an order exists in the store with a known ID
-When I send a GET request to /store/order/{orderId}
-Then the response status code should be 200
-And the response body should contain the order details
-
-User Management: Authentication and Security
-Create a User (Success Path)
-Title: Ensure a new user can be created
-Scenario: Successfully create a new user
-Given the Petstore API is available
-When I send a POST request to /user with valid user details
-Then the response status code should be 200
-And the user should be retrievable by username
-
-Create a User with Invalid Data
-Title: Prevent creation of users with invalid data
-Scenario: Attempt to create a user with invalid data
-Given the Petstore API is available
-When I send a POST request to /user with invalid or missing required fields
+Scenario: Attempt to find pets using an invalid status
+Given the API is available
+When a GET request is sent to the /pet/findByStatus endpoint with an invalid status like "unknown"
 Then the response status code should be 400
-And the response should indicate invalid or missing fields
+And the response body should indicate an error due to the invalid status value​
 
-Security and Availability Risks
-Unauthenticated Access to Sensitive Endpoints
-Title: Ensure sensitive endpoints enforce authentication
-Scenario: Attempt to access a sensitive endpoint without authentication
-Given the Petstore API is available
-When I send a request to a sensitive endpoint (e.g., /user/{username}) without authentication
-Then the response status code should be 401 (Unauthorized)
+Scenario: Successfully retrieve a pet by its ID
+Given a pet exists in the system with a known ID
+When a GET request is sent to the /pet/{petId} endpoint with that ID
+Then the response status code should be 200
+And the response body should contain the correct pet's details
 
-Excessive Data Exposure
-Title: Ensure API responses do not expose unnecessary data
-Scenario: Retrieve pet or user details
-Given the Petstore API is available
-When I send a GET request to /pet/{petId} or /user/{username}
-Then the response should contain only the necessary fields
-And sensitive or internal fields should not be exposed
+Scenario: Attempt to retrieve a pet with a non-existent ID
+Given the API is available
+When a GET request is sent to the /pet/{petId} endpoint with a non-existent pet ID
+Then the response status code should be 404​
+And the response body should contain a "Pet not found" error message​
 
-Rate Limiting and Abuse Prevention
-Title: Ensure the API is protected against abuse and DoS
-Scenario: Send a high volume of requests in a short time
-Given the Petstore API is available
-When I send a rapid sequence of identical requests to any endpoint
-Then the API should enforce rate limiting
-And excess requests should be rejected with status 429 (Too Many Requests)
+Scenario: Successfully update an existing pet's information
+Given a pet exists and a valid update payload is prepared
+When a PUT request is sent to the /pet endpoint with the updated data​
+Then the response status code should be 200
+And the pet's information should be updated in the system
+
+Scenario: Attempt to update a pet with an invalid ID
+Given a valid update payload is prepared
+And the payload contains a non-existent pet ID
+When a PUT request is sent to the /pet endpoint
+Then the response status code should be 400​
+And the response body should indicate an "Invalid ID supplied" error​
+
+Scenario: Successfully delete a pet
+Given a pet exists in the system with a known ID
+When a DELETE request is sent to the /pet/{petId} endpoint with that ID
+Then the response status code should be 200
+And the pet should be removed from the system
+
+Scenario: Attempt to delete a pet with a non-existent ID
+Given the API is available
+When a DELETE request is sent to the /pet/{petId} endpoint with a non-existent pet ID
+Then the response status code should be 404
+
+Store Operations API Tests
+Feature: Pet Store Order and Inventory Management
+As a store manager, I want to manage pet orders and inventory to ensure efficient store operations and accurate stock levels.
+
+Scenario: Successfully place an order for a pet
+Given a valid order payload for an available pet is prepared
+When a POST request is sent to the /store/order endpoint​
+Then the response status code should be 200
+And the response body should contain the complete order details
+
+Scenario: Attempt to place an order with invalid data
+Given an order payload with invalid data is prepared
+When a POST request is sent to the /store/order endpoint​
+Then the response status code should be 400
+And the response body should indicate an error due to invalid input
+
+Scenario: Successfully retrieve a purchase order by its ID
+Given a purchase order exists with a known ID
+When a GET request is sent to the /store/order/{orderId} endpoint with that ID
+Then the response status code should be 200
+And the response body should contain the correct order details
+
+Scenario: Attempt to retrieve an order with a non-existent ID
+Given the API is available
+When a GET request is sent to the /store/order/{orderId} endpoint with a non-existent order ID
+Then the response status code should be 404
+And the response body should contain an "Order not found" message
+
+Scenario: Successfully delete a purchase order
+Given a purchase order exists with a known ID
+When a DELETE request is sent to the /store/order/{orderId} endpoint with that ID
+Then the response status code should be 200
+And the order should be removed from the system
+
+Scenario: Retrieve pet inventories by status
+Given the API is available
+When a GET request is sent to the /store/inventory endpoint​
+Then the response status code should be 200
+And the response body should return a map of status codes to quantities​
+
+User Account API Tests
+Feature: User Account Management
+As a user, I want to manage my account through the API, including creation, login, logout, and data updates, to ensure secure and personalized access.
+
+Scenario: Successfully create a new user
+Given a valid user payload is prepared
+When a POST request is sent to the /user endpoint
+Then the response status code should be 200
+And the response should indicate a successful user creation
+
+Scenario: Successfully log in a user with valid credentials
+Given a user exists with valid credentials
+When a GET request is sent to the /user/login endpoint with the user's credentials
+Then the response status code should be 200
+And the response should include a session token
+
+Scenario: Attempt to log in with invalid credentials
+Given a user provides incorrect credentials
+When a GET request is sent to the /user/login endpoint
+Then the response status code should be 400
+And the response should indicate an "Invalid username/password supplied" error
+
+Scenario: Successfully log out a user
+Given a user is currently logged in
+When a GET request is sent to the /user/logout endpoint
+Then the response status code should be 200
+And the user session should be terminated
+
+Scenario: Successfully retrieve a user's information by username
+Given a user exists with a known username
+When a GET request is sent to the /user/{username} endpoint with that username
+Then the response status code should be 200
+And the response body should contain the user's details
+
+Scenario: Attempt to retrieve information for a non-existent user
+Given the API is available
+When a GET request is sent to the /user/{username} endpoint with a non-existent username
+Then the response status code should be 404
+And the response should indicate that the user was not found
+
+Scenario: Successfully update a user's information
+Given a user exists and a valid update payload is prepared
+When a PUT request is sent to the /user/{username} endpoint
+Then the response status code should be 200
+And the user's information should be updated
+
+Scenario: Successfully delete a user
+Given a user exists with a known username
+When a DELETE request is sent to the /user/{username} endpoint with that username
+Then the response status code should be 200
+And the user account should be removed from the system
