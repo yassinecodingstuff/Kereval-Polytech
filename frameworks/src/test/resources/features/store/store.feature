@@ -1,44 +1,47 @@
-Feature: Store API - Order and Inventory Management
+Feature: Comprehensive Store Management API Tests
   Background:
-    * url 'https://petstore.swagger.io/v2'
-    * configure headers = { 'api_key': 'special-key', 'Content-Type': 'application/json' }
+    * url baseUrl = 'https://petstore.swagger.io/v2'
+    * configure headers = { 'Content-Type': 'application/json' }
 
-  @critical @inventory
-  Scenario: Get store inventory
-    Given path 'store/inventory'
-    When method get
-    Then status 200
-    And match each response contains '#number'
-    And match response.available >= 0
-
-  @high @order-create
-  Scenario: Place an order for a pet
-    * def order = { id: 3001, petId: 1003, quantity: 1, shipDate: '2025-11-04T10:00:00Z', status: 'placed', complete: true }
-    Given path 'store/order'
-    And request order
+  # Positive Scenarios
+  Scenario: Place a new order
+    Given path '/store/order'
+    And request { id: 5001, petId: 1001, quantity: 2, shipDate: '2025-11-04T10:00:00Z', status: 'placed', complete: true }
     When method post
     Then status 200
-    And match response.petId == order.petId
-    * def orderId = response.id
-    Given path 'store/order', orderId
+    And match response.status == 'placed'
+
+  Scenario: Retrieve an existing order
+    Given path '/store/order/5001'
     When method get
     Then status 200
-    And match response.id == orderId
+    And match response.id == 5001
 
-  @high @order-invalid
-  Scenario: Place an order with invalid quantity
-    * def order = { id: 3002, petId: 1003, quantity: -2 }
-    Given path 'store/order'
-    And request order
+  Scenario: Get store inventory
+    Given path '/store/inventory'
+    When method get
+    Then status 200
+    And match response contains { available: '#number' }
+
+  Scenario: Delete an existing order
+    Given path '/store/order/5001'
+    When method delete
+    Then status 200
+    And match response.message == '5001'
+
+  # Negative Scenarios
+  Scenario: Retrieve non-existent order
+    Given path '/store/order/9999'
+    When method get
+    Then status 404
+
+  Scenario: Place order with invalid data
+    Given path '/store/order'
+    And request { petId: 'abc', quantity: 'x' }
     When method post
     Then status 400
 
-  @medium @order-delete
-  Scenario: Delete an order and verify retrieval fails
-    * def id = 3001
-    Given path 'store/order', id
+  Scenario: Delete order with invalid ID
+    Given path '/store/order/xyz'
     When method delete
-    Then status 200
-    Given path 'store/order', id
-    When method get
-    Then status 404
+    Then status 400

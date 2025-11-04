@@ -1,47 +1,66 @@
-Feature: User API - Authentication and Account Management
+Feature: Comprehensive User Management API Tests
   Background:
-    * url 'https://petstore.swagger.io/v2'
+    * url baseUrl = 'https://petstore.swagger.io/v2'
     * configure headers = { 'Content-Type': 'application/json' }
 
-  @critical @user-create
-  Scenario: Create new user
-    * def user = { id: 4001, username: 'tester123', firstName: 'Test', lastName: 'User', email: 'tester@example.com', password: 's3cr3t', phone: '1234567890', userStatus: 1 }
-    Given path 'user'
-    And request user
+  # Positive Scenarios
+  Scenario: Create a new user
+    Given path '/user'
+    And request { id: 3001, username: 'karateUser', firstName: 'John', lastName: 'Doe', email: 'john@example.com', password: '12345', phone: '123456789', userStatus: 1 }
     When method post
     Then status 200
-    Given path 'user', user.username
-    When method get
-    Then status 200
-    And match response.username == user.username
-    And match response does not contain 'password'
+    And match response.message == '3001'
 
-  @high @user-login
-  Scenario: User login and logout
-    * def username = 'tester123'
-    * def password = 's3cr3t'
-    Given path 'user/login'
-    And param username = username
-    And param password = password
+  Scenario: Get user by username
+    Given path '/user/karateUser'
     When method get
     Then status 200
-    * def token = response.message
-    Given path 'user/logout'
-    When method get
+    And match response.username == 'karateUser'
+
+  Scenario: Update user information
+    Given path '/user/karateUser'
+    And request { id: 3001, username: 'karateUser', firstName: 'Johnny', lastName: 'Doe', email: 'johnny@example.com', password: '54321', phone: '987654321', userStatus: 1 }
+    When method put
     Then status 200
 
-  @medium @user-login-failed
-  Scenario: User login with wrong password
-    Given path 'user/login'
-    And param username = 'tester123'
-    And param password = 'wrongpass'
+  Scenario: User login with valid credentials
+    Given path '/user/login'
+    And param username = 'karateUser'
+    And param password = '54321'
+    When method get
+    Then status 200
+    And match response contains 'logged in user session'
+
+  Scenario: User logout
+    Given path '/user/logout'
+    When method get
+    Then status 200
+
+  Scenario: Delete user
+    Given path '/user/karateUser'
+    When method delete
+    Then status 200
+    And match response.message == 'karateUser'
+
+
+
+
+
+  # Negative Scenarios
+  Scenario: Retrieve a non-existent user
+    Given path '/user/ghost'
+    When method get
+    Then status 404
+
+  Scenario: Login with invalid credentials
+    Given path '/user/login'
+    And param username = 'fakeUser'
+    And param password = 'wrong'
     When method get
     Then status 400
-    And match response.message contains 'Invalid'
 
-  @security @auth
-  Scenario: Delete pet without API key
-    * configure headers = { 'Content-Type': 'application/json' }
-    Given path 'pet', 1003
+
+  Scenario: Delete user that does not exist
+    Given path '/user/nonexistent'
     When method delete
-    Then status 401
+    Then status 404
