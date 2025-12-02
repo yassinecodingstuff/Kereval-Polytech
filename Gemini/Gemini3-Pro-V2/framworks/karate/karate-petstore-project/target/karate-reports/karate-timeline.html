@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Karate Timeline</title>
+    <style>
+      body, html { font-family: arial, sans-serif; font-size: 11pt; }
+      #visualization { box-sizing: border-box; width: 100%; height: 300px; }
+      .vis-item.failed { background-color: #F2928C; }
+      .page-heading { padding: 0.5em; margin-bottom: 0.5em; background-color: lightcyan; border: 1px solid gray; }
+    </style>
+    <script src="res/vis.min.js"></script>
+    <link href="res/vis.min.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="page-heading">
+      <a href="karate-summary.html">Summary</a>
+    </div>     
+    <div id="visualization"></div>
+    <script>
+var groups = [{"content":"main","id":1}];
+var items = [{"id":1,"group":1,"content":"com\/examples\/pet[1:10]","start":1764664990163,"end":1764664993625,"title":"com\/examples\/pet[1:10] 09:43:10.163-09:43:13.625 Successfully create a new pet with all fields"},{"id":2,"group":1,"content":"com\/examples\/pet[2:30]","start":1764664993712,"end":1764664994140,"title":"com\/examples\/pet[2:30] 09:43:13.712-09:43:14.140 Successfully create a pet with only required fields"},{"id":3,"group":1,"content":"com\/examples\/pet[3:38]","start":1764664994172,"end":1764664996136,"title":"com\/examples\/pet[3:38] 09:43:14.172-09:43:16.136 Verify full lifecycle of a pet"},{"id":4,"group":1,"content":"com\/examples\/pet[4:71]","start":1764664996159,"end":1764664996570,"title":"com\/examples\/pet[4:71] 09:43:16.159-09:43:16.570 Reject pet creation with invalid data type","className":"failed"},{"id":5,"group":1,"content":"com\/examples\/pet[5:77]","start":1764664996856,"end":1764664997642,"title":"com\/examples\/pet[5:77] 09:43:16.856-09:43:17.642 Retrieve pets by status"},{"id":6,"group":1,"content":"com\/examples\/store[1:13]","start":1764665002277,"end":1764665002606,"title":"com\/examples\/store[1:13] 09:43:22.277-09:43:22.606 Successfully place an order for a pet"},{"id":7,"group":1,"content":"com\/examples\/store[2:30]","start":1764665002619,"end":1764665003270,"title":"com\/examples\/store[2:30] 09:43:22.619-09:43:23.270 Retrieve a valid order by ID"},{"id":8,"group":1,"content":"com\/examples\/store[3:41]","start":1764665004144,"end":1764665004437,"title":"com\/examples\/store[3:41] 09:43:24.144-09:43:24.437 Reject order deletion with non-numeric ID","className":"failed"},{"id":9,"group":1,"content":"com\/examples\/store[4:46]","start":1764665004468,"end":1764665004778,"title":"com\/examples\/store[4:46] 09:43:24.468-09:43:24.778 Verify Store Inventory returns correct data structure"},{"id":10,"group":1,"content":"com\/examples\/user[1:13]","start":1764665005736,"end":1764665006355,"title":"com\/examples\/user[1:13] 09:43:25.736-09:43:26.355 Create user, login, and delete user","className":"failed"},{"id":11,"group":1,"content":"com\/examples\/user[2:51]","start":1764665006391,"end":1764665006683,"title":"com\/examples\/user[2:51] 09:43:26.391-09:43:26.683 Update a user that does not exist","className":"failed"},{"id":12,"group":1,"content":"com\/examples\/user[3:58]","start":1764665006699,"end":1764665007316,"title":"com\/examples\/user[3:58] 09:43:26.699-09:43:27.316 Create a list of users with Array"}];
+</script>
+    <script>
+      var container = document.getElementById('visualization');
+      var timeline = new vis.Timeline(container);
+      timeline.setOptions({groupOrder: 'content'});
+      timeline.setGroups(new vis.DataSet(groups));
+      timeline.setItems(new vis.DataSet(items));
+    </script>
+  </body>
+</html>
