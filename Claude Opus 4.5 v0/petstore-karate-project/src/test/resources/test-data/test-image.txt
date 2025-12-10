@@ -1,0 +1,2 @@
+This is a placeholder file for image upload tests.
+In production, replace this with an actual image file (JPEG, PNG, etc.)

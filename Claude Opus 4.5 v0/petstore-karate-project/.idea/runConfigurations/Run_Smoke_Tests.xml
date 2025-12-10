@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Smoke Tests" type="JUnit" factoryName="JUnit">
+    <module name="petstore-karate-tests"/>
+    <option name="PACKAGE_NAME" value="petstore"/>
+    <option name="MAIN_CLASS_NAME" value="petstore.TestRunner"/>
+    <option name="METHOD_NAME" value="testSmoke"/>
+    <option name="TEST_OBJECT" value="method"/>
+    <option name="VM_PARAMETERS" value="-Dkarate.env=dev"/>
+    <option name="PARAMETERS" value=""/>
+    <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$"/>
+    <method v="2">
+      <option name="Make" enabled="true"/>
+    </method>
+  </configuration>
+</component>

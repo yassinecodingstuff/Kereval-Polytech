@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petstore Karate - Metrics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #333;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      .dashboard {
+        padding: 30px;
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+      }
+
+      .metric-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .metric-card.success {
+        border-left-color: #28a745;
+      }
+
+      .metric-card.warning {
+        border-left-color: #ffc107;
+      }
+
+      .metric-card.info {
+        border-left-color: #17a2b8;
+      }
+
+      .metric-title {
+        font-size: 0.9em;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+
+      .metric-value {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .metric-status {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+
+      .status-ok {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-excellent {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .status-review {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .chart-container {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .chart-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      .summary-table th,
+      .summary-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .summary-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .summary-table tr:hover {
+        background: #f8f9fa;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 30px;
+        background: #e9ecef;
+        border-radius: 15px;
+        overflow: hidden;
+        margin: 10px 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        transition: width 1s ease-in-out;
+      }
+
+      .failures-list {
+        list-style: none;
+        margin-top: 15px;
+      }
+
+      .failures-list li {
+        padding: 8px;
+        margin: 5px 0;
+        background: #f8f9fa;
+        border-radius: 5px;
+        border-left: 3px solid #dc3545;
+      }
+
+      .endpoints-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .endpoint-item {
+        padding: 10px;
+        background: #e7f3ff;
+        border-radius: 5px;
+        font-size: 0.9em;
+        border-left: 3px solid #0066cc;
+      }
+
+      .endpoint-item.missing {
+        background: #fff3cd;
+        border-left-color: #ffc107;
+      }
+
+      .section-title {
+        font-size: 1.8em;
+        margin: 30px 0 20px 0;
+        color: #333;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .footer {
+        background: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📊 Metrics Dashboard</h1>
+        <p>
+          Petstore Karate Test Automation Project - Comprehensive Test Metrics
+        </p>
+        <p style="margin-top: 10px; font-size: 0.9em">
+          Generated: December 2, 2025 | 198 Scenarios Executed
+        </p>
+      </div>
+
+      <div class="dashboard">
+        <!-- M0: Build Sanity -->
+        <div class="metrics-grid">
+          <div class="metric-card success">
+            <div class="metric-title">M0. First Build & Test Sanity</div>
+            <div class="metric-value">OK</div>
+            <div class="metric-status status-ok">✅ Build Successful</div>
+            <p style="margin-top: 15px; color: #666; font-size: 0.9em">
+              ✓ 198 scenarios executed<br />
+              ✓ 12 JSON reports generated<br />
+              ✓ No blocking errors
+            </p>
+          </div>
+
+          <!-- M1: Scenario Pass Rate -->
+          <div class="metric-card success">
+            <div class="metric-title">M1. Scenario Pass Rate</div>
+            <div class="metric-value">93.94%</div>
+            <div class="metric-status status-excellent">✅ Excellent</div>
+            <div class="progress-bar" style="margin-top: 15px">
+              <div class="progress-fill" style="width: 93.94%">186/198</div>
+            </div>
+            <p style="margin-top: 10px; color: #666; font-size: 0.85em">
+              186 passed | 12 failed
+            </p>
+          </div>
+
+          <!-- M5: Endpoint Coverage -->
+          <div class="metric-card success">
+            <div class="metric-title">M5. Endpoint Coverage</div>
+            <div class="metric-value">95.00%</div>
+            <div class="metric-status status-excellent">✅ Excellent</div>
+            <div class="progress-bar" style="margin-top: 15px">
+              <div class="progress-fill" style="width: 95%">19/20</div>
+            </div>
+            <p style="margin-top: 10px; color: #666; font-size: 0.85em">
+              19 tested | 1 not tested
+            </p>
+          </div>
+        </div>
+
+        <!-- M3 & M4: Match Rates -->
+        <div class="metrics-grid">
+          <div class="metric-card info">
+            <div class="metric-title">M3. Status-Code Match Rate</div>
+            <div class="metric-value">98.66%</div>
+            <div class="metric-status status-excellent">✅ Excellent</div>
+            <div class="progress-bar" style="margin-top: 15px">
+              <div class="progress-fill" style="width: 98.66%">295/299</div>
+            </div>
+            <p style="margin-top: 10px; color: #666; font-size: 0.85em">
+              295 passed | 4 failed
+            </p>
+          </div>
+
+          <div class="metric-card info">
+            <div class="metric-title">M4. Response-Shape Match Rate</div>
+            <div class="metric-value">99.33%</div>
+            <div class="metric-status status-excellent">✅ Excellent</div>
+            <div class="progress-bar" style="margin-top: 15px">
+              <div class="progress-fill" style="width: 99.33%">149/150</div>
+            </div>
+            <p style="margin-top: 10px; color: #666; font-size: 0.85em">
+              149 passed | 1 failed
+            </p>
+          </div>
+
+          <div class="metric-card info">
+            <div class="metric-title">M6. Negative Case Ratio</div>
+            <div class="metric-value">22.73%</div>
+            <div class="metric-status status-ok">✅ Good</div>
+            <div class="progress-bar" style="margin-top: 15px">
+              <div class="progress-fill" style="width: 22.73%">45/198</div>
+            </div>
+            <p style="margin-top: 10px; color: #666; font-size: 0.85em">
+              45 negative scenarios
+            </p>
+          </div>
+        </div>
+
+        <!-- M7: Test Isolation -->
+        <div class="metric-card success" style="margin-bottom: 30px">
+          <div class="metric-title">M7. Test Isolation & Modularity Score</div>
+          <div class="metric-value">1.85 / 2.0</div>
+          <div class="metric-status status-excellent">✅ Excellent</div>
+          <div class="progress-bar" style="margin-top: 15px">
+            <div class="progress-fill" style="width: 92.5%">92.5%</div>
+          </div>
+          <p style="margin-top: 15px; color: #666">
+            <strong>Breakdown:</strong><br />
+            • Score 2 (Auto-isolated): 165 scenarios (83.3%)<br />
+            • Score 1 (Acceptable): 30 scenarios (15.2%)<br />
+            • Score 0 (Fragile): 3 scenarios (1.5%)
+          </p>
+        </div>
+
+        <!-- Charts Section -->
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+          "
+        >
+          <!-- M2: Failure Breakdown Chart -->
+          <div class="chart-container">
+            <div class="chart-title">M2. Failure Breakdown by Type</div>
+            <canvas id="failureBreakdownChart"></canvas>
+            <p style="margin-top: 15px; color: #666; font-size: 0.9em">
+              <strong>Total Failures: 12</strong><br />
+              • Assertion failures: 10 (83.33%)<br />
+              • Data validation failures: 2 (16.67%)<br />
+              • Syntax errors: 0 (0%)<br />
+              • Dependency errors: 0 (0%)
+            </p>
+          </div>
+
+          <!-- Scenario Distribution Chart -->
+          <div class="chart-container">
+            <div class="chart-title">Scenario Distribution by Feature</div>
+            <canvas id="scenarioDistributionChart"></canvas>
+            <p style="margin-top: 15px; color: #666; font-size: 0.9em">
+              <strong>Total: 198 scenarios</strong><br />
+              • Passed: 186 (93.94%)<br />
+              • Failed: 12 (6.06%)
+            </p>
+          </div>
+        </div>
+
+        <!-- Metrics Summary Table -->
+        <div class="chart-container">
+          <div class="chart-title">📋 Metrics Summary</div>
+          <table class="summary-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Status</th>
+                <th>Threshold</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>M0. Build Sanity</strong></td>
+                <td>OK (1)</td>
+                <td><span class="metric-status status-ok">✅ Pass</span></td>
+                <td>All parameters true</td>
+              </tr>
+              <tr>
+                <td><strong>M1. Pass Rate</strong></td>
+                <td>93.94%</td>
+                <td>
+                  <span class="metric-status status-excellent"
+                    >✅ Excellent</span
+                  >
+                </td>
+                <td>> 90%</td>
+              </tr>
+              <tr>
+                <td><strong>M2. Assertion Failures</strong></td>
+                <td>83.33%</td>
+                <td>
+                  <span class="metric-status status-review">⚠️ Review</span>
+                </td>
+                <td>Review needed</td>
+              </tr>
+              <tr>
+                <td><strong>M3. Status Match</strong></td>
+                <td>98.66%</td>
+                <td>
+                  <span class="metric-status status-excellent"
+                    >✅ Excellent</span
+                  >
+                </td>
+                <td>> 95%</td>
+              </tr>
+              <tr>
+                <td><strong>M4. Response Match</strong></td>
+                <td>99.33%</td>
+                <td>
+                  <span class="metric-status status-excellent"
+                    >✅ Excellent</span
+                  >
+                </td>
+                <td>> 95%</td>
+              </tr>
+              <tr>
+                <td><strong>M5. Endpoint Coverage</strong></td>
+                <td>95.00%</td>
+                <td>
+                  <span class="metric-status status-excellent"
+                    >✅ Excellent</span
+                  >
+                </td>
+                <td>> 80%</td>
+              </tr>
+              <tr>
+                <td><strong>M6. Negative Ratio</strong></td>
+                <td>22.73%</td>
+                <td><span class="metric-status status-ok">✅ Good</span></td>
+                <td>> 20%</td>
+              </tr>
+              <tr>
+                <td><strong>M7. Test Isolation</strong></td>
+                <td>1.85/2.0</td>
+                <td>
+                  <span class="metric-status status-excellent"
+                    >✅ Excellent</span
+                  >
+                </td>
+                <td>> 1.5</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Failure Details -->
+        <div class="chart-container">
+          <div class="chart-title">❌ Failure Details (12 Total)</div>
+          <ul class="failures-list">
+            <li>
+              <strong>TC-SEC-004</strong> - Security: SQL injection test - Match
+              assertion failed
+            </li>
+            <li>
+              <strong>TC-SEC-009</strong> - Security: Integer overflow handling
+              - Match assertion failed
+            </li>
+            <li>
+              <strong>TC-SEC-010</strong> - Security: HTTP method validation -
+              Status assertion failed
+            </li>
+            <li>
+              <strong>TC-SEC-016</strong> - Security: Login endpoint security -
+              Match assertion failed
+            </li>
+            <li>
+              <strong>TC-USER-006</strong> - User: Login response format - Match
+              assertion failed
+            </li>
+            <li>
+              <strong>TC-SCHEMA-005</strong> - Contract: Schema validation -
+              Match assertion failed
+            </li>
+            <li>
+              <strong>TC-CONTENT-014</strong> - Content: Accept header handling
+              - Status assertion failed
+            </li>
+            <li>
+              <strong>TC-PET-004</strong> - Pet: Missing required field name
+              validation
+            </li>
+            <li>
+              <strong>TC-PET-005</strong> - Pet: Missing required field
+              photoUrls validation
+            </li>
+            <li>
+              <strong>TC-PET-006</strong> - Pet: Empty request body validation
+            </li>
+            <li>
+              <strong>TC-PET-027</strong> - Pet: Empty body rejection test
+            </li>
+            <li>
+              <strong>TC-STORE-015</strong> - Store: Boundary ID test failure
+            </li>
+          </ul>
+        </div>
+
+        <!-- Endpoint Coverage Details -->
+        <div class="chart-container">
+          <div class="chart-title">
+            🔗 Endpoint Coverage (19/20 tested - 95%)
+          </div>
+          <p
+            style="
+              margin-bottom: 15px;
+              color: #856404;
+              background: #fff3cd;
+              padding: 10px;
+              border-radius: 5px;
+              border-left: 3px solid #856404;
+            "
+          >
+            <strong>⚠️ Note:</strong> GET /pet/findByTags is marked as
+            <strong>deprecated</strong> in the Swagger specification but is
+            still tested for backward compatibility.
+          </p>
+          <div class="endpoints-grid">
+            <div class="endpoint-item">✅ POST /pet</div>
+            <div class="endpoint-item">✅ GET /pet/{petId}</div>
+            <div class="endpoint-item">✅ PUT /pet</div>
+            <div class="endpoint-item">✅ DELETE /pet/{petId}</div>
+            <div class="endpoint-item">✅ GET /pet/findByStatus</div>
+            <div
+              class="endpoint-item"
+              style="background: #fff3cd; border-left-color: #856404"
+            >
+              ⚠️ GET /pet/findByTags
+              <span style="font-size: 0.8em; color: #856404">(deprecated)</span>
+            </div>
+            <div class="endpoint-item">✅ POST /pet/{petId} (form)</div>
+            <div class="endpoint-item missing">
+              ❌ POST /pet/{petId}/uploadImage
+            </div>
+            <div class="endpoint-item">✅ POST /store/order</div>
+            <div class="endpoint-item">✅ GET /store/order/{orderId}</div>
+            <div class="endpoint-item">✅ DELETE /store/order/{orderId}</div>
+            <div class="endpoint-item">✅ GET /store/inventory</div>
+            <div class="endpoint-item">✅ POST /user</div>
+            <div class="endpoint-item">✅ GET /user/{username}</div>
+            <div class="endpoint-item">✅ PUT /user/{username}</div>
+            <div class="endpoint-item">✅ DELETE /user/{username}</div>
+            <div class="endpoint-item">✅ GET /user/login</div>
+            <div class="endpoint-item">✅ GET /user/logout</div>
+            <div class="endpoint-item">✅ POST /user/createWithArray</div>
+            <div class="endpoint-item">✅ POST /user/createWithList</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p><strong>Petstore Karate Test Automation Project</strong></p>
+        <p>
+          Test Execution: Petstore Swagger API v2 | Framework: Karate 1.4.1 with
+          JUnit 5
+        </p>
+        <p>Report Generated: December 2, 2025</p>
+      </div>
+    </div>
+
+    <script>
+      // Failure Breakdown Chart
+      const ctx = document
+        .getElementById("failureBreakdownChart")
+        .getContext("2d");
+      new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: [
+            "Assertion Failures",
+            "Data Validation Failures",
+            "Syntax Errors",
+            "Dependency Errors",
+          ],
+          datasets: [
+            {
+              data: [10, 2, 0, 0],
+              backgroundColor: ["#ffc107", "#dc3545", "#6c757d", "#343a40"],
+              borderWidth: 2,
+              borderColor: "#fff",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                padding: 15,
+                font: {
+                  size: 12,
+                },
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  let label = context.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  label += context.parsed + " failures";
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((context.parsed / total) * 100).toFixed(
+                    2
+                  );
+                  label += " (" + percentage + "%)";
+                  return label;
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Scenario Distribution Chart
+      const ctx2 = document
+        .getElementById("scenarioDistributionChart")
+        .getContext("2d");
+      new Chart(ctx2, {
+        type: "bar",
+        data: {
+          labels: [
+            "content",
+            "schema",
+            "error",
+            "integration",
+            "performance",
+            "pet-delete",
+            "pet-get",
+            "pet-post",
+            "pet-put",
+            "security",
+            "store",
+            "user",
+          ],
+          datasets: [
+            {
+              label: "Passed",
+              data: [14, 13, 20, 7, 14, 12, 19, 16, 9, 13, 29, 20],
+              backgroundColor: "#28a745",
+              borderColor: "#28a745",
+              borderWidth: 1,
+            },
+            {
+              label: "Failed",
+              data: [1, 1, 0, 0, 0, 0, 0, 3, 1, 4, 1, 1],
+              backgroundColor: "#dc3545",
+              borderColor: "#dc3545",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 5,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              position: "top",
+              labels: {
+                padding: 15,
+                font: {
+                  size: 12,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Animate progress bars on load
+      window.addEventListener("load", function () {
+        const progressBars = document.querySelectorAll(".progress-fill");
+        progressBars.forEach((bar) => {
+          const width = bar.style.width;
+          bar.style.width = "0%";
+          setTimeout(() => {
+            bar.style.width = width;
+          }, 100);
+        });
+      });
+    </script>
+  </body>
+</html>
