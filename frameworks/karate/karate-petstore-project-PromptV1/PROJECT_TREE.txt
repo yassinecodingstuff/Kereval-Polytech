@@ -1,0 +1,19 @@
+karate-petstore/
+  pom.xml
+  src/
+    test/
+      java/
+        com/
+          example/
+            petstore/
+              TestRunner.java
+      resources/
+        karate-config.js
+        files/
+          pet.png
+        pet/
+          pet.feature
+        store/
+          store.feature
+        user/
+          user.feature
