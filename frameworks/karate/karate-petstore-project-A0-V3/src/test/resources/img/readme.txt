@@ -1,0 +1,1 @@
+Tiny assets for multipart tests.
