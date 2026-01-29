@@ -9,8 +9,8 @@ Feature: Pet lifecycle management (critical E2E flows for high-impact functional
       id: '##number',
       category: '##object',
       name: '#string',
-      photoUrls: '#[] string',
-      tags: '##[] object',
+      photoUrls: '#[] #string',
+      tags: '##[] #object',
       status: '#string'
     }
     """
