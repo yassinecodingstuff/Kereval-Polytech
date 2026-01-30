@@ -1,10 +1,18 @@
 function fn() {
   var env = karate.env || 'dev';
-  var oasDefault = 'https://petstore.swagger.io/v2';
-  var base = karate.properties['BASE_URL'] || oasDefault || 'http://localhost:8080';
+  var config = { env: env, baseUrl: 'https://petstore.swagger.io/v2' };
 
-  karate.configure('connectTimeout', 30000);
-  karate.configure('readTimeout', 30000);
+  if (env === 'dev') {
+    config.baseUrl = 'https://petstore.swagger.io/v2';
+  } else if (env === 'local') {
+    config.baseUrl = 'http://localhost:8080/v2';
+  } else if (env === 'staging') {
+    config.baseUrl = 'https://petstore.swagger.io/v2';
+  }
 
-  return { env: env, baseUrl: base };
+  karate.configure('connectTimeout', 5000);
+  karate.configure('readTimeout', 20000);
+  karate.configure('ssl', true);
+
+  return config;
 }
