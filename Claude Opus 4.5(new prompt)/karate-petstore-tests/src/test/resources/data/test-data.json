@@ -1,0 +1,160 @@
+{
+  "pets": {
+    "valid": {
+      "dog": {
+        "id": 10001,
+        "category": { "id": 1, "name": "Dogs" },
+        "name": "Buddy",
+        "photoUrls": ["http://example.com/buddy.jpg"],
+        "tags": [{ "id": 1, "name": "friendly" }, { "id": 2, "name": "trained" }],
+        "status": "available"
+      },
+      "cat": {
+        "id": 10002,
+        "category": { "id": 2, "name": "Cats" },
+        "name": "Whiskers",
+        "photoUrls": ["http://example.com/whiskers.jpg"],
+        "tags": [{ "id": 3, "name": "playful" }],
+        "status": "pending"
+      },
+      "bird": {
+        "id": 10003,
+        "category": { "id": 3, "name": "Birds" },
+        "name": "Tweety",
+        "photoUrls": ["http://example.com/tweety.jpg"],
+        "tags": [{ "id": 4, "name": "singing" }],
+        "status": "sold"
+      }
+    },
+    "invalid": {
+      "missingName": {
+        "id": 99999,
+        "photoUrls": ["http://example.com/photo.jpg"],
+        "status": "available"
+      },
+      "missingPhotoUrls": {
+        "id": 99998,
+        "name": "NoPhoto"
+      },
+      "invalidStatus": {
+        "id": 99997,
+        "name": "InvalidStatus",
+        "photoUrls": ["url"],
+        "status": "invalid_status"
+      }
+    }
+  },
+  "orders": {
+    "valid": {
+      "standard": {
+        "id": 1001,
+        "petId": 10001,
+        "quantity": 1,
+        "shipDate": "2025-06-15T10:00:00.000Z",
+        "status": "placed",
+        "complete": false
+      },
+      "approved": {
+        "id": 1002,
+        "petId": 10002,
+        "quantity": 2,
+        "shipDate": "2025-06-20T14:30:00.000Z",
+        "status": "approved",
+        "complete": false
+      },
+      "delivered": {
+        "id": 1003,
+        "petId": 10003,
+        "quantity": 1,
+        "shipDate": "2025-01-01T09:00:00.000Z",
+        "status": "delivered",
+        "complete": true
+      }
+    },
+    "invalid": {
+      "negativeQuantity": {
+        "id": 9999,
+        "petId": 1,
+        "quantity": -1,
+        "status": "placed"
+      },
+      "invalidStatus": {
+        "id": 9998,
+        "petId": 1,
+        "quantity": 1,
+        "status": "invalid"
+      }
+    }
+  },
+  "users": {
+    "valid": {
+      "standard": {
+        "id": 5001,
+        "username": "testuser1",
+        "firstName": "Test",
+        "lastName": "User",
+        "email": "testuser1@example.com",
+        "password": "SecurePass123!",
+        "phone": "+1234567890",
+        "userStatus": 1
+      },
+      "admin": {
+        "id": 5002,
+        "username": "adminuser",
+        "firstName": "Admin",
+        "lastName": "User",
+        "email": "admin@example.com",
+        "password": "AdminPass456!",
+        "phone": "+0987654321",
+        "userStatus": 2
+      }
+    },
+    "invalid": {
+      "emptyUsername": {
+        "id": 9001,
+        "username": "",
+        "email": "empty@example.com",
+        "password": "pass"
+      },
+      "invalidEmail": {
+        "id": 9002,
+        "username": "invalidemailuser",
+        "email": "not-an-email",
+        "password": "pass"
+      }
+    }
+  },
+  "schemas": {
+    "pet": {
+      "id": "#number",
+      "name": "#string",
+      "photoUrls": "#array",
+      "category": "##object",
+      "tags": "##array",
+      "status": "#? _ == 'available' || _ == 'pending' || _ == 'sold' || _ == null"
+    },
+    "order": {
+      "id": "#number",
+      "petId": "#number",
+      "quantity": "#number",
+      "shipDate": "##string",
+      "status": "#? _ == 'placed' || _ == 'approved' || _ == 'delivered' || _ == null",
+      "complete": "#boolean"
+    },
+    "user": {
+      "id": "##number",
+      "username": "#string",
+      "firstName": "##string",
+      "lastName": "##string",
+      "email": "##string",
+      "password": "##string",
+      "phone": "##string",
+      "userStatus": "##number"
+    },
+    "apiResponse": {
+      "code": "#number",
+      "type": "#string",
+      "message": "#string"
+    }
+  }
+}

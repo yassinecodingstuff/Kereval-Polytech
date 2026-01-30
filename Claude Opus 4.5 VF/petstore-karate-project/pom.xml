@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.petstore.api</groupId>
+    <artifactId>petstore-karate-tests</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>Petstore Karate API Tests</name>
+    <description>Production-ready API test automation suite for Petstore API using Karate framework</description>
+
+    <properties>
+        <!-- Project Encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Java Version -->
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- Dependency Versions -->
+        <karate.version>1.4.1</karate.version>
+        <junit.jupiter.version>5.10.1</junit.jupiter.version>
+        <gherkin.version>26.2.0</gherkin.version>
+        <cucumber.version>7.14.0</cucumber.version>
+        <slf4j.version>2.0.9</slf4j.version>
+        <logback.version>1.4.11</logback.version>
+        <jackson.version>2.15.3</jackson.version>
+        <commons.lang3.version>3.13.0</commons.lang3.version>
+
+        <!-- Plugin Versions -->
+        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+        <maven.surefire.plugin.version>3.0.0-M9</maven.surefire.plugin.version>
+        <maven.failsafe.plugin.version>3.0.0-M9</maven.failsafe.plugin.version>
+
+        <!-- Karate Configuration Properties -->
+        <karate.env>dev</karate.env>
+        <karate.options></karate.options>
+        <test.parallel.threads>5</test.parallel.threads>
+    </properties>
+
+    <dependencies>
+        <!-- Karate Dependencies -->
+        <dependency>
+            <groupId>com.intuit.karate</groupId>
+            <artifactId>karate-junit5</artifactId>
+            <version>${karate.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.intuit.karate</groupId>
+            <artifactId>karate-core</artifactId>
+            <version>${karate.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit Jupiter Dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Cucumber Dependencies -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>gherkin</artifactId>
+            <version>${gherkin.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>${cucumber.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Logging Dependencies -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Utility Dependencies -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/java</directory>
+                <includes>
+                    <include>**/*.feature</include>
+                    <include>**/*.json</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.csv</include>
+                    <include>**/*.txt</include>
+                    <include>**/*.js</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <!-- Maven Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                    <compilerArgs>
+                        <arg>-Xlint:unchecked</arg>
+                        <arg>-Xlint:deprecation</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Resources Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven.resources.plugin.version}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire Plugin (Unit Tests) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Runner.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                    <systemPropertyVariables>
+                        <karate.env>${karate.env}</karate.env>
+                        <karate.options>${karate.options}</karate.options>
+                    </systemPropertyVariables>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <testFailureIgnore>false</testFailureIgnore>
+                    <parallel>methods</parallel>
+                    <threadCount>${test.parallel.threads}</threadCount>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Failsafe Plugin (Integration Tests) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${maven.failsafe.plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                    <systemPropertyVariables>
+                        <karate.env>${karate.env}</karate.env>
+                        <karate.options>${karate.options}</karate.options>
+                    </systemPropertyVariables>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <testFailureIgnore>false</testFailureIgnore>
+                    <parallel>methods</parallel>
+                    <threadCount>${test.parallel.threads}</threadCount>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <!-- Default Profile -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <karate.env>dev</karate.env>
+                <karate.options></karate.options>
+            </properties>
+        </profile>
+
+        <!-- Environment Profiles -->
+        <profile>
+            <id>dev</id>
+            <properties>
+                <karate.env>dev</karate.env>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>staging</id>
+            <properties>
+                <karate.env>staging</karate.env>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <karate.env>prod</karate.env>
+            </properties>
+        </profile>
+
+        <!-- Tag Profiles -->
+        <profile>
+            <id>smoke</id>
+            <properties>
+                <karate.options>--tags @smoke</karate.options>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>critical</id>
+            <properties>
+                <karate.options>--tags @critical</karate.options>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>high</id>
+            <properties>
+                <karate.options>--tags @high</karate.options>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>security</id>
+            <properties>
+                <karate.options>--tags @security</karate.options>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>pet</id>
+            <properties>
+                <karate.options>--tags @pet</karate.options>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>store</id>
+            <properties>
+                <karate.options>--tags @store</karate.options>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>user</id>
+            <properties>
+                <karate.options>--tags @user</karate.options>
+            </properties>
+        </profile>
+    </profiles>
+</project>

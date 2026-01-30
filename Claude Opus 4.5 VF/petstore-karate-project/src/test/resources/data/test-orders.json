@@ -1,0 +1,20 @@
+[
+  {
+    "petId": 100001,
+    "quantity": 1,
+    "status": "placed",
+    "complete": false
+  },
+  {
+    "petId": 100002,
+    "quantity": 2,
+    "status": "approved",
+    "complete": false
+  },
+  {
+    "petId": 100003,
+    "quantity": 1,
+    "status": "delivered",
+    "complete": true
+  }
+]

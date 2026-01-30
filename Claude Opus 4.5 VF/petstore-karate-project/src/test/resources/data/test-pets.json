@@ -1,0 +1,34 @@
+[
+  {
+    "id": 100001,
+    "name": "TestDog",
+    "category": { "id": 1, "name": "Dogs" },
+    "photoUrls": ["https://example.com/testdog.jpg"],
+    "tags": [{ "id": 1, "name": "friendly" }],
+    "status": "available"
+  },
+  {
+    "id": 100002,
+    "name": "TestCat",
+    "category": { "id": 2, "name": "Cats" },
+    "photoUrls": ["https://example.com/testcat.jpg"],
+    "tags": [{ "id": 2, "name": "playful" }],
+    "status": "available"
+  },
+  {
+    "id": 100003,
+    "name": "TestBird",
+    "category": { "id": 3, "name": "Birds" },
+    "photoUrls": ["https://example.com/testbird.jpg"],
+    "tags": [{ "id": 3, "name": "colorful" }],
+    "status": "pending"
+  },
+  {
+    "id": 100004,
+    "name": "TestFish",
+    "category": { "id": 4, "name": "Fish" },
+    "photoUrls": ["https://example.com/testfish.jpg"],
+    "tags": [{ "id": 4, "name": "tropical" }],
+    "status": "sold"
+  }
+]

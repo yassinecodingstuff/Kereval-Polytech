@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User",
+  "description": "User object schema for Petstore API",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "format": "int64",
+      "description": "Unique identifier for the user"
+    },
+    "username": {
+      "type": "string",
+      "description": "Username for login",
+      "minLength": 1
+    },
+    "firstName": {
+      "type": "string",
+      "description": "User's first name"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "User's last name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "User's email address"
+    },
+    "password": {
+      "type": "string",
+      "description": "User's password"
+    },
+    "phone": {
+      "type": "string",
+      "description": "User's phone number"
+    },
+    "userStatus": {
+      "type": "integer",
+      "format": "int32",
+      "description": "User status"
+    }
+  }
+}

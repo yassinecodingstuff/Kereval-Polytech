@@ -1,0 +1,29 @@
+[
+  {
+    "username": "testuser1",
+    "firstName": "Test",
+    "lastName": "User1",
+    "email": "testuser1@example.com",
+    "password": "TestPass123!",
+    "phone": "555-0001",
+    "userStatus": 1
+  },
+  {
+    "username": "testuser2",
+    "firstName": "Test",
+    "lastName": "User2",
+    "email": "testuser2@example.com",
+    "password": "TestPass456!",
+    "phone": "555-0002",
+    "userStatus": 1
+  },
+  {
+    "username": "adminuser",
+    "firstName": "Admin",
+    "lastName": "User",
+    "email": "admin@example.com",
+    "password": "AdminPass789!",
+    "phone": "555-0003",
+    "userStatus": 1
+  }
+]
